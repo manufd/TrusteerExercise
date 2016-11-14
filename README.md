@@ -1,4 +1,3 @@
 # TrusteerExercise
-trusteer exercise
 
-The main is in the package "client"
+The main is in the package "client" and is called TrusteerExerciseLauncher
