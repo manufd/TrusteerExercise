@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;

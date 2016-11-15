@@ -25,10 +25,6 @@ public class MimeMessageBuilder {
 	private static final String RECIPIENTS = "recipients";
 	private static final String FROM = "from";
 	private static final String REPLY_TO = "replyTo";
-	private static String USERNAME = "username";
-	private static String PASSWORD = "password";
-	private String usernameValue;
-	private String passwordValue;
 
 	/**
 	 * @throws MessagingException

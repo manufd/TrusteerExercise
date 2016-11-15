@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
