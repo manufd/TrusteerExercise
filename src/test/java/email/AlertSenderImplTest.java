@@ -4,6 +4,7 @@
 package email;
 
 import java.io.UnsupportedEncodingException;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
@@ -32,4 +33,13 @@ public class AlertSenderImplTest {
 		alertSenderImpl.send("ciao", "nice to meet you");
 	}
 
+	@Test(expected = MissingResourceException.class)
+	public void sendFailIntegrationTest() throws UnsupportedEncodingException, MessagingException {
+		Session alertEmailSession = SessionBuilder.createAlertEmailSession(ResourceBundle.getBundle("emaiiii"));
+		MimeMessage mimeMessage = MimeMessageBuilder.createAlertMimeMessage(alertEmailSession,
+				ResourceBundle.getBundle(MESSAGE_CONFIG));
+		ResourceBundle.getBundle(CREDENTIALS);
+		AlertSenderImpl alertSenderImpl = new AlertSenderImpl(mimeMessage, ResourceBundle.getBundle(CREDENTIALS));
+		alertSenderImpl.send("ciao", "nice to meet you");
+	}
 }

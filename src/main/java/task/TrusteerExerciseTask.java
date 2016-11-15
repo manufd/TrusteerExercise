@@ -37,14 +37,22 @@ public class TrusteerExerciseTask implements Runnable {
 	private final Map<DomainInfo, String> domainInfoToHashedBody;
 	private static final Logger logger = LoggerFactory.getLogger(TrusteerExerciseTask.class);
 
-	public TrusteerExerciseTask(List<DomainInfo> domainsInfo, HttpClientRequest clientRequest, HashFunction calculator,
-			Sender sender, Map<DomainInfo, String> domainInfoToHashedBody) {
+	public TrusteerExerciseTask(List<DomainInfo> domainsInfo, HttpClientRequest clientRequest,
+			HashFunction hashFunction, Sender sender, Map<DomainInfo, String> domainInfoToHashedBody) {
 
-		this.domainsInfo = new CopyOnWriteArrayList<>(domainsInfo);
+		this.domainsInfo = copy(domainsInfo);
 		this.clientRequest = clientRequest;
-		this.hashFunction = calculator;
+		this.hashFunction = hashFunction;
 		this.sender = sender;
-		this.domainInfoToHashedBody = new ConcurrentHashMap<>(domainInfoToHashedBody);
+		this.domainInfoToHashedBody = copy(domainInfoToHashedBody);
+	}
+
+	ConcurrentHashMap<DomainInfo, String> copy(Map<DomainInfo, String> domainInfoToHashedBody) {
+		return new ConcurrentHashMap<>(domainInfoToHashedBody);
+	}
+
+	CopyOnWriteArrayList<DomainInfo> copy(List<DomainInfo> domainsInfo) {
+		return new CopyOnWriteArrayList<>(domainsInfo);
 	}
 
 	@Override
