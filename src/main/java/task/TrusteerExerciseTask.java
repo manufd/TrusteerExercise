@@ -62,6 +62,7 @@ public class TrusteerExerciseTask implements Runnable {
 				String hashResult = hashFunction.apply(body);
 				String oldValue = domainInfoToHashedBody.put(domainInfo, hashResult);
 				if (oldValue != null && !oldValue.equals(domainInfoToHashedBody.get(domainInfo))) {
+					logger.info("the hash value of " + domainInfo + " has changed");
 					try {
 						sender.send("ALERT",
 								"The content of: " + urlAsString + " " + domainInfo.getIp() + "has changed");
