@@ -3,6 +3,8 @@ package task;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.mail.MessagingException;
 
@@ -24,6 +26,10 @@ import httpRequest.HttpClientRequest;
  *
  */
 public class TrusteerExerciseTask implements Runnable {
+	/**
+	 * 
+	 */
+	private static final String ASTERISC = "*";
 	private final List<DomainInfo> domainsInfo;
 	private final HttpClientRequest clientRequest;
 	private final HashFunction hashFunction;
@@ -34,11 +40,11 @@ public class TrusteerExerciseTask implements Runnable {
 	public TrusteerExerciseTask(List<DomainInfo> domainsInfo, HttpClientRequest clientRequest, HashFunction calculator,
 			Sender sender, Map<DomainInfo, String> domainInfoToHashedBody) {
 
-		this.domainsInfo = domainsInfo;
+		this.domainsInfo = new CopyOnWriteArrayList<>(domainsInfo);
 		this.clientRequest = clientRequest;
 		this.hashFunction = calculator;
 		this.sender = sender;
-		this.domainInfoToHashedBody = domainInfoToHashedBody;
+		this.domainInfoToHashedBody = new ConcurrentHashMap<>(domainInfoToHashedBody);
 	}
 
 	@Override
@@ -47,7 +53,7 @@ public class TrusteerExerciseTask implements Runnable {
 			String body = null;
 			String urlAsString = null;
 			try {
-				if (domainInfo.getIp().equals("*")) {
+				if (domainInfo.getIp().equals(ASTERISC)) {
 					urlAsString = domainInfo.getUrlAsString();
 				} else {
 					urlAsString = domainInfo.getUrlStringFromProtocolAndIp();

@@ -3,8 +3,8 @@ package domain;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class DomainsConfigurationReaderImpl implements DomainsConfigurationReade
 	}
 
 	public List<DomainInfo> read() throws IOException {
-		List<DomainInfo> domainsInfo = new LinkedList<>();
+		List<DomainInfo> domainsInfo = new CopyOnWriteArrayList<>();
 		List<String> readLines = FileUtils.readLines(new File(getClass().getClassLoader().getResource(PATH).getFile()), UTF_8);
 		for (String line : readLines) {
 			String[] split = line.split("\\s+");
