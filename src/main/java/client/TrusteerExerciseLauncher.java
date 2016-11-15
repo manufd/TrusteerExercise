@@ -24,8 +24,9 @@ public class TrusteerExerciseLauncher {
 	private static final String MESSAGE_CONFIG = "messageConfig";
 	private static final String CONFIG = "config.properties";
 	private static final String TASK_CONFIG = "taskConfig";
+	private static final String CREDENTIALS = "credentials"; 
 	public static void main(String[] args) throws InterruptedException, ClientProtocolException, IOException, MessagingException {
-		Sender alertSender = SenderFactory.createAlertSenderImpl(ResourceBundle.getBundle(EMAIL_CONFIG), ResourceBundle.getBundle(MESSAGE_CONFIG));
+		Sender alertSender = SenderFactory.createAlertSenderImpl(ResourceBundle.getBundle(EMAIL_CONFIG), ResourceBundle.getBundle(MESSAGE_CONFIG), ResourceBundle.getBundle(CREDENTIALS));
 		DomainsConfigurationReader configurationReader = new DomainsConfigurationReaderImpl(CONFIG);
 		List<DomainInfo> domainsInfo = configurationReader.read();
 		Runnable task = new TrusteerExerciseTask(domainsInfo, HttpClientRequestImpl.getInstance(), Sha1.getInstance(), alertSender, new ConcurrentHashMap<>());
