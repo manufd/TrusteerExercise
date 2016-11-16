@@ -3,8 +3,6 @@ package task;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.mail.MessagingException;
 
@@ -26,9 +24,7 @@ import httpRequest.HttpClientRequest;
  *
  */
 public class TrusteerExerciseTask implements Runnable {
-	/**
-	 * 
-	 */
+
 	private static final String ASTERISC = "*";
 	private final List<DomainInfo> domainsInfo;
 	private final HttpClientRequest clientRequest;
@@ -40,19 +36,11 @@ public class TrusteerExerciseTask implements Runnable {
 	public TrusteerExerciseTask(List<DomainInfo> domainsInfo, HttpClientRequest clientRequest,
 			HashFunction hashFunction, Sender sender, Map<DomainInfo, String> domainInfoToHashedBody) {
 
-		this.domainsInfo = copy(domainsInfo);
+		this.domainsInfo = domainsInfo;
 		this.clientRequest = clientRequest;
 		this.hashFunction = hashFunction;
 		this.sender = sender;
-		this.domainInfoToHashedBody = copy(domainInfoToHashedBody);
-	}
-
-	ConcurrentHashMap<DomainInfo, String> copy(Map<DomainInfo, String> domainInfoToHashedBody) {
-		return new ConcurrentHashMap<>(domainInfoToHashedBody);
-	}
-
-	CopyOnWriteArrayList<DomainInfo> copy(List<DomainInfo> domainsInfo) {
-		return new CopyOnWriteArrayList<>(domainsInfo);
+		this.domainInfoToHashedBody = domainInfoToHashedBody;
 	}
 
 	@Override
@@ -68,7 +56,7 @@ public class TrusteerExerciseTask implements Runnable {
 				}
 				body = clientRequest.get(urlAsString);
 				String hashResult = hashFunction.apply(body);
-				String oldValue = domainInfoToHashedBody.put(domainInfo, hashResult);
+				String oldValue = putInMap(domainInfo, hashResult);
 				if (oldValue != null && !oldValue.equals(domainInfoToHashedBody.get(domainInfo))) {
 					logger.info("the hash value of " + domainInfo + " has changed");
 					try {
@@ -85,5 +73,9 @@ public class TrusteerExerciseTask implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	String putInMap(DomainInfo domainInfo, String hashResult) {
+		return domainInfoToHashedBody.put(domainInfo, hashResult);
 	}
 }

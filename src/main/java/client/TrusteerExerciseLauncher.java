@@ -1,13 +1,11 @@
 package client;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.MessagingException;
 
-import domain.DomainInfo;
 import domain.DomainsConfigurationReader;
 import domain.DomainsConfigurationReaderImpl;
 import email.Sender;
@@ -31,9 +29,8 @@ public class TrusteerExerciseLauncher {
 					ResourceBundle.getBundle(MESSAGE_CONFIG), ResourceBundle.getBundle(CREDENTIALS));
 
 			DomainsConfigurationReader configurationReader = new DomainsConfigurationReaderImpl(CONFIG);
-			List<DomainInfo> domainsInfo = configurationReader.read();
-			Runnable task = new TrusteerExerciseTask(domainsInfo, HttpClientRequestImpl.getInstance(),
-					Sha1.getInstance(), alertSender, new ConcurrentHashMap<>());
+			Runnable task = new TrusteerExerciseTask(configurationReader.read(), HttpClientRequestImpl.getInstance(),
+					Sha1.getInstance(), alertSender, new HashMap<>());
 			TaskExecutorImpl taskExecutor = new TaskExecutorImpl(task);
 			taskExecutor.scheduleTask(ResourceBundle.getBundle(TASK_CONFIG));
 		} catch (MessagingException | IOException | InterruptedException e) {
