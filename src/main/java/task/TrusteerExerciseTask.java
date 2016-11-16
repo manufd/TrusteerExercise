@@ -25,7 +25,6 @@ import httpRequest.HttpClientRequest;
  */
 public class TrusteerExerciseTask implements Runnable {
 
-	private static final String ASTERISC = "*";
 	private final List<DomainInfo> domainsInfo;
 	private final HttpClientRequest clientRequest;
 	private final HashFunction hashFunction;
@@ -47,35 +46,29 @@ public class TrusteerExerciseTask implements Runnable {
 	public void run() {
 		for (DomainInfo domainInfo : domainsInfo) {
 			String body = null;
-			String urlAsString = null;
+			String address = null;
 			try {
-				if (domainInfo.getIp().equals(ASTERISC)) {
-					urlAsString = domainInfo.getUrlAsString();
-				} else {
-					urlAsString = domainInfo.getUrlStringFromProtocolAndIp();
-				}
-				body = clientRequest.get(urlAsString);
+				address = domainInfo.getAddress();
+				body = clientRequest.get(address);
 				String hashResult = hashFunction.apply(body);
-				String oldValue = putInMap(domainInfo, hashResult);
+				String oldValue = domainInfoToHashedBody.put(domainInfo, hashResult);
 				if (oldValue != null && !oldValue.equals(domainInfoToHashedBody.get(domainInfo))) {
 					logger.info("the hash value of " + domainInfo + " has changed");
 					try {
-						sender.send("ALERT",
-								"The content of: " + urlAsString + " " + domainInfo.getIp() + "has changed");
+						sender.send("ALERT", "The content of: " + domainInfo.getUrlString() + " " + domainInfo.getIp()
+								+ "has changed");
 					} catch (MessagingException e) {
-						logger.error("attempt to send failed, with domain: " + urlAsString + " " + domainInfo.getIp());
+						logger.error("attempt to send failed, with domain: " + domainInfo.getUrlString() + " "
+								+ domainInfo.getIp());
 						e.printStackTrace();
 					}
 				}
 
 			} catch (IOException e) {
-				logger.error("connection with the url " + urlAsString + " failed");
+				logger.error("connection with the url " + address + " failed");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	String putInMap(DomainInfo domainInfo, String hashResult) {
-		return domainInfoToHashedBody.put(domainInfo, hashResult);
-	}
 }

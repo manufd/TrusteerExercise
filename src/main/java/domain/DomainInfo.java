@@ -13,8 +13,10 @@ import org.apache.http.annotation.ThreadSafe;
 @ThreadSafe
 public final class DomainInfo {
 
-	private final URL url; // DO NOT PUBLISH this member to not break class immutability
+	private final URL url; // DO NOT PUBLISH this member to not break class
+							// immutability
 	private final String ip;
+	private final static String ASTERISC = "*";
 
 	public DomainInfo(URL url, String ip) {
 		super();
@@ -53,7 +55,21 @@ public final class DomainInfo {
 		return true;
 	}
 
-	public String getUrlAsString() {
+	/**
+	 * get the address by analyzing url and ip
+	 * @return the address
+	 */
+	public String getAddress() {
+		String urlAsString;
+		if (getIp().equals(ASTERISC)) {
+			urlAsString = getUrlString();
+		} else {
+			urlAsString = getUrlStringFromProtocolAndIp();
+		}
+		return urlAsString;
+	}
+
+	public String getUrlString() {
 		return url.toString();
 	}
 
@@ -65,12 +81,12 @@ public final class DomainInfo {
 		return url.getProtocol();
 	}
 
-	public String getUrlStringFromProtocolAndIp() {
+	private String getUrlStringFromProtocolAndIp() {
 		return url.getProtocol() + "//" + ip;
 	}
 
 	public String toString() {
-		return "DomainInfo: [ url: " + getUrlAsString() + " ip: " + getIp() + "]";
+		return "DomainInfo: [ url: " + getUrlString() + " ip: " + getIp() + "]";
 	}
 
 }
